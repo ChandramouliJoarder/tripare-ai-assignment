@@ -2,6 +2,13 @@
 
 A service that compares hotel prices from two mock suppliers in parallel using **Temporal workflows**, deduplicates by hotel name, keeps only the cheapest offer, caches results in **Redis**, and lets users filter by price range — with filtering performed inside Redis using `ZRANGEBYSCORE`, not in application code.
 
+## Live Deployments
+
+- **Live Frontend**: [https://tripare-ai-assignment-glsd.vercel.app/](https://tripare-ai-assignment-glsd.vercel.app/)
+- **Live Backend API**: [https://tripare-ai-assignment.onrender.com](https://tripare-ai-assignment.onrender.com)
+  - Health check: [https://tripare-ai-assignment.onrender.com/health](https://tripare-ai-assignment.onrender.com/health)
+  - Hotel offers API: [https://tripare-ai-assignment.onrender.com/api/hotels?city=delhi](https://tripare-ai-assignment.onrender.com/api/hotels?city=delhi)
+
 ## Architecture
 
 ```mermaid

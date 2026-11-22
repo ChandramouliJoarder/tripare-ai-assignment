@@ -33,13 +33,12 @@ healthRouter.get('/health', async (_req: Request, res: Response) => {
   const temporal: 'up' | 'down' =
     temporalResult.status === 'fulfilled' && temporalResult.value ? 'up' : 'down';
 
-  const isProd = process.env.NODE_ENV === 'production';
   let overallStatus: 'ok' | 'degraded' | 'down';
-  if ((redis === 'down' || temporal === 'down') && isProd) {
-    overallStatus = 'down';
-  } else if (sA === 'down' && sB === 'down') {
+  if (sA === 'down' && sB === 'down') {
+    // Only truly "down" when both data suppliers are unreachable
     overallStatus = 'down';
   } else if (sA === 'down' || sB === 'down' || redis === 'down' || temporal === 'down') {
+    // Redis/Temporal are optional infrastructure — their absence is degraded, not fatal
     overallStatus = 'degraded';
   } else {
     overallStatus = 'ok';

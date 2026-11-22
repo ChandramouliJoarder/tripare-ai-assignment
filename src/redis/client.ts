@@ -7,8 +7,12 @@ let redisClient: Redis | null = null;
 export function getRedisClient(): Redis {
   if (!redisClient) {
     redisClient = new Redis(config.redisUrl, {
-      maxRetriesPerRequest: 3,
-      retryStrategy: (times: number) => Math.min(times * 200, 3000),
+      maxRetriesPerRequest: 1,
+      connectTimeout: 500,
+      retryStrategy: (times: number) => {
+        if (times > 2) return null; // Stop retrying quickly if Redis is offline
+        return 100;
+      },
       lazyConnect: false,
     });
 

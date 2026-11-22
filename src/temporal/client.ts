@@ -4,12 +4,17 @@ import { logger } from '../logger';
 
 let temporalClient: Client | null = null;
 
-export async function getTemporalClient(): Promise<Client> {
+export async function getTemporalClient(connectTimeoutMs = 1500): Promise<Client> {
   if (temporalClient) return temporalClient;
 
-  const connection = await Connection.connect({
+  const connectPromise = Connection.connect({
     address: config.temporalAddress,
   });
+  const timeoutPromise = new Promise<never>((_, reject) =>
+    setTimeout(() => reject(new Error('Temporal connection timeout')), connectTimeoutMs)
+  );
+
+  const connection = await Promise.race([connectPromise, timeoutPromise]);
 
   temporalClient = new Client({
     connection,
